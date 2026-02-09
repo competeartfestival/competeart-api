@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Escola {
+  id                 String        @id @default(uuid())
+  nome               String
+  endereco           String
+  email              String
+  whatsapp           String
+  nomeDiretor        String
+
+  limiteCoreografias Int
+
+  profissionais      Profissional[]
+  bailarinos         Bailarino[]
+  coreografias       Coreografia[]
+
+  criadoEm           DateTime      @default(now())
+  atualizadoEm       DateTime      @updatedAt
+}
+
+model Profissional {
+  id          String            @id @default(uuid())
+  nome        String
+  funcao      FuncaoProfissional
+  ehExtra     Boolean
+
+  escolaId    String
+  escola      Escola            @relation(fields: [escolaId], references: [id])
+
+  criadoEm    DateTime          @default(now())
+}
+
+model Bailarino {
+  id             String                 @id @default(uuid())
+  nomeCompleto   String
+  nomeArtistico  String
+  cpf            String                 @unique
+  dataNascimento DateTime
+
+  escolaId       String
+  escola         Escola                 @relation(fields: [escolaId], references: [id])
+
+  coreografias   CoreografiaBailarino[]
+
+  criadoEm       DateTime               @default(now())
+}
+
+model Coreografia {
+  id             String                  @id @default(uuid())
+  nome           String
+  nomeCoreografo String
+
+  nivelTecnico   NivelTecnico
+  formacao       Formacao
+  modalidade     Modalidade
+  categoria      Categoria
+
+  duracao        String
+  musica         String
+  temCenario     Boolean
+
+  escolaId       String
+  escola         Escola                  @relation(fields: [escolaId], references: [id])
+
+  bailarinos     CoreografiaBailarino[]
+
+  criadoEm       DateTime                @default(now())
+}
+
+model CoreografiaBailarino {
+  id            String       @id @default(uuid())
+
+  coreografiaId String
+  coreografia   Coreografia  @relation(fields: [coreografiaId], references: [id])
+
+  bailarinoId   String
+  bailarino     Bailarino    @relation(fields: [bailarinoId], references: [id])
+
+  criadoEm      DateTime     @default(now())
+
+  @@unique([coreografiaId, bailarinoId])
+}
+
+enum FuncaoProfissional {
+  COREOGRAFO
+  ASSISTENTE
+}
+
+enum NivelTecnico {
+  INICIANTE
+  AMADOR
+  SEMI_PROFISSIONAL
+  PROFISSIONAL
+}
+
+enum Formacao {
+  SOLO
+  DUO
+  TRIO
+  GRUPO
+}
+
+enum Modalidade {
+  BALLET_CLASSICO
+  BALLET_NEOCLASSICO
+  JAZZ
+  CONTEMPORANEO
+  DANCAS_URBANAS
+  SAPATEADO
+  ESTILO_LIVRE
+  OUTROS
+}
+
+enum Categoria {
+  BABY
+  INFANTIL_I
+  INFANTIL_II
+  JUVENIL_I
+  JUVENIL_II
+  ADULTO
+  ADULTO_INICIANTE
+  SENIOR
+  MASTER
+}
