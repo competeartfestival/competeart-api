@@ -1,0 +1,19 @@
+export const criarBailarinoSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string", format: "uuid" },
+    },
+  },
+  body: {
+    type: "object",
+    required: ["nomeCompleto", "nomeArtistico", "cpf", "dataNascimento"],
+    properties: {
+      nomeCompleto: { type: "string", minLength: 1 },
+      nomeArtistico: { type: "string", minLength: 1 },
+      cpf: { type: "string", minLength: 11 },
+      dataNascimento: { type: "string", format: "date" },
+    },
+  },
+};
