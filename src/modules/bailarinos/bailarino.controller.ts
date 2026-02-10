@@ -21,7 +21,6 @@ export async function criarBailarinoController(
       return;
     }
 
-    // CPF duplicado (unique constraint)
     if (error.code === "P2002") {
       reply.code(409).send({ message: "CPF já cadastrado" });
       return;

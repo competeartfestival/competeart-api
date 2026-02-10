@@ -7,10 +7,8 @@ import { coreografiaRoutes } from "./modules/coreografias/coreografia.routes";
 export function buildApp() {
   const app = Fastify({ logger: true });
 
-  // 1️⃣ plugins
   app.register(prismaPlugin);
 
-  // 2️⃣ rotas
   app.register(escolaRoutes);
   app.register(bailarinoRoutes);
   app.register(coreografiaRoutes);

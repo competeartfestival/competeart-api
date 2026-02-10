@@ -21,7 +21,6 @@ export class CoreografiaService {
   constructor(private prisma: PrismaClient) {}
 
   async criar(data: CriarCoreografiaInput) {
-    // 1️⃣ Escola existe?
     const escola = await this.prisma.escola.findUnique({
       where: { id: data.escolaId },
       include: { coreografias: true },
@@ -31,12 +30,10 @@ export class CoreografiaService {
       throw new Error("ESCOLA_NAO_ENCONTRADA");
     }
 
-    // 2️⃣ Limite de coreografias
     if (escola.coreografias.length >= escola.limiteCoreografias) {
       throw new Error("LIMITE_COREOGRAFIAS_ATINGIDO");
     }
 
-    // 3️⃣ Validação formação x bailarinos
     const qtd = data.bailarinosIds.length;
 
     if (data.formacao === "SOLO" && qtd !== 1) {
@@ -52,7 +49,6 @@ export class CoreografiaService {
       throw new Error("FORMACAO_INVALIDA");
     }
 
-    // 4️⃣ Criação transacional
     return this.prisma.$transaction(async (tx) => {
       const coreografia = await tx.coreografia.create({
         data: {
