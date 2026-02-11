@@ -68,3 +68,14 @@ export const criarCoreografiaSchema = {
     },
   },
 };
+
+export const listarCoreografiasSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string", format: "uuid" },
+    },
+  },
+};
+

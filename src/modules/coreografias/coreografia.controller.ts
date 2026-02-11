@@ -34,3 +34,35 @@ export async function criarCoreografiaController(
     throw error;
   }
 }
+
+export async function listarCoreografiasController(
+  app: FastifyInstance,
+  request: any,
+  reply: any
+) {
+  try {
+    const service = new CoreografiaService(app.prisma);
+
+    const coreografias = await service.listarPorEscola(request.params.id);
+
+    const response = coreografias.map((c) => ({
+      id: c.id,
+      nome: c.nome,
+      formacao: c.formacao,
+      nivelTecnico: c.nivelTecnico,
+      categoria: c.categoria,
+      modalidade: c.modalidade,
+      duracao: c.duracao,
+      bailarinos: c.bailarinos.map((b) => b.bailarino),
+    }));
+
+    reply.send(response);
+  } catch (error: any) {
+    if (error.message === "ESCOLA_NAO_ENCONTRADA") {
+      reply.code(404).send({ message: "Escola não encontrada" });
+      return;
+    }
+
+    throw error;
+  }
+}

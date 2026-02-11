@@ -75,4 +75,32 @@ export class CoreografiaService {
       return coreografia;
     });
   }
+
+  async listarPorEscola(escolaId: string) {
+  const escola = await this.prisma.escola.findUnique({
+    where: { id: escolaId },
+  });
+
+  if (!escola) {
+    throw new Error("ESCOLA_NAO_ENCONTRADA");
+  }
+
+  return this.prisma.coreografia.findMany({
+    where: { escolaId },
+    orderBy: { criadoEm: "asc" },
+    include: {
+      bailarinos: {
+        include: {
+          bailarino: {
+            select: {
+              id: true,
+              nomeArtistico: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 }

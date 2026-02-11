@@ -29,3 +29,24 @@ export async function criarBailarinoController(
     throw error;
   }
 }
+
+export async function listarBailarinosController(
+  app: FastifyInstance,
+  request: any,
+  reply: any
+) {
+  try {
+    const service = new BailarinoService(app.prisma);
+
+    const bailarinos = await service.listarPorEscola(request.params.id);
+
+    reply.send(bailarinos);
+  } catch (error: any) {
+    if (error.message === "ESCOLA_NAO_ENCONTRADA") {
+      reply.code(404).send({ message: "Escola não encontrada" });
+      return;
+    }
+
+    throw error;
+  }
+}

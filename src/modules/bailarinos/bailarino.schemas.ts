@@ -17,3 +17,13 @@ export const criarBailarinoSchema = {
     },
   },
 };
+
+export const listarBailarinosSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string", format: "uuid" },
+    },
+  },
+};

@@ -30,4 +30,18 @@ export class BailarinoService {
       },
     });
   }
+  async listarPorEscola(escolaId: string) {
+    const escola = await this.prisma.escola.findUnique({
+      where: { id: escolaId },
+    });
+
+    if (!escola) {
+      throw new Error("ESCOLA_NAO_ENCONTRADA");
+    }
+
+    return this.prisma.bailarino.findMany({
+      where: { escolaId },
+      orderBy: { nomeArtistico: "asc" },
+    });
+  }
 }
