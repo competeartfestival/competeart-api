@@ -18,6 +18,10 @@ export function buildApp() {
   app.register(coreografiaRoutes);
   app.register(resumoRoutes);
 
+  app.get("/", async () => {
+    return { status: "ok" };
+  });
+
   app.get("/health", async () => {
     return { status: "ok" };
   });
