@@ -25,7 +25,7 @@ export class ResumoService {
     }
 
     const assistentes = escola.profissionais.filter(
-      (p) => p.funcao === FuncaoProfissional.ASSISTENTE
+      (p) => p.funcao === FuncaoProfissional.ASSISTENTE,
     );
 
     const assistentesExtras = Math.max(0, assistentes.length - 2);
@@ -68,6 +68,7 @@ export class ResumoService {
       escola: {
         id: escola.id,
         nome: escola.nome,
+        limiteCoreografias: escola.limiteCoreografias,
       },
       totais: {
         coreografias: escola.coreografias.length,
