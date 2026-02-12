@@ -13,6 +13,7 @@ export function buildApp() {
       "http://localhost:5173",
       "https://competeart-web.vercel.app",
       "https://competeartfestival.com.br",
+      "https://www.competeartfestival.com.br"
     ],
   });
 
