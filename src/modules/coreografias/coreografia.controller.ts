@@ -49,7 +49,6 @@ export async function listarCoreografiasController(
       id: c.id,
       nome: c.nome,
       formacao: c.formacao,
-      nivelTecnico: c.nivelTecnico,
       categoria: c.categoria,
       modalidade: c.modalidade,
       duracao: c.duracao,

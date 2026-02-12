@@ -7,7 +7,6 @@ interface CriarCoreografiaInput {
   escolaId: string;
   nome: string;
   nomeCoreografo: string;
-  nivelTecnico: any;
   formacao: Formacao;
   modalidade: any;
   categoria: any;
@@ -54,7 +53,6 @@ export class CoreografiaService {
         data: {
           nome: data.nome,
           nomeCoreografo: data.nomeCoreografo,
-          nivelTecnico: data.nivelTecnico,
           formacao: data.formacao,
           modalidade: data.modalidade,
           categoria: data.categoria,

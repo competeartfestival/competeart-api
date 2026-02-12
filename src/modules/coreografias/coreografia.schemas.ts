@@ -11,7 +11,6 @@ export const criarCoreografiaSchema = {
     required: [
       "nome",
       "nomeCoreografo",
-      "nivelTecnico",
       "formacao",
       "modalidade",
       "categoria",
@@ -23,10 +22,6 @@ export const criarCoreografiaSchema = {
     properties: {
       nome: { type: "string", minLength: 1 },
       nomeCoreografo: { type: "string", minLength: 1 },
-
-      nivelTecnico: {
-        enum: ["INICIANTE", "AMADOR", "SEMI_PROFISSIONAL", "PROFISSIONAL"],
-      },
       formacao: {
         enum: ["SOLO", "DUO", "TRIO", "GRUPO"],
       },

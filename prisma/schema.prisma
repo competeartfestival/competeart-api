@@ -57,7 +57,6 @@ model Coreografia {
   nome           String
   nomeCoreografo String
 
-  nivelTecnico   NivelTecnico
   formacao       Formacao
   modalidade     Modalidade
   categoria      Categoria
@@ -91,13 +90,6 @@ model CoreografiaBailarino {
 enum FuncaoProfissional {
   COREOGRAFO
   ASSISTENTE
-}
-
-enum NivelTecnico {
-  INICIANTE
-  AMADOR
-  SEMI_PROFISSIONAL
-  PROFISSIONAL
 }
 
 enum Formacao {
