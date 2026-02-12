@@ -9,7 +9,11 @@ import { resumoRoutes } from "./modules/resumo/resumo.routes";
 export function buildApp() {
   const app = Fastify({ logger: true });
   app.register(cors, {
-    origin: ["http://localhost:5173", "https://competeart-web.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://competeart-web.vercel.app",
+      "https://competeartfestival.com.br",
+    ],
   });
 
   app.register(prismaPlugin);
