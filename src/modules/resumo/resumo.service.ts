@@ -58,8 +58,13 @@ export class ResumoService {
       return {
         id: c.id,
         nome: c.nome,
+        nomeCoreografo: c.nomeCoreografo,
         formacao: c.formacao,
-        bailarinos: qtdBailarinos,
+        modalidade: c.modalidade,
+        categoria: c.categoria,
+        duracao: c.duracao,
+        musica: c.musica,
+        temCenario: c.temCenario,
         valor,
       };
     });
@@ -69,6 +74,9 @@ export class ResumoService {
         id: escola.id,
         nome: escola.nome,
         limiteCoreografias: escola.limiteCoreografias,
+        whatsapp: escola.whatsapp,
+        nomeDiretor: escola.nomeDiretor,
+        endereco: escola.endereco,
       },
       totais: {
         coreografias: escola.coreografias.length,

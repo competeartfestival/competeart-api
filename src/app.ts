@@ -5,6 +5,7 @@ import { escolaRoutes } from "./modules/escolas/escola.routes";
 import { bailarinoRoutes } from "./modules/bailarinos/bailarino.routes";
 import { coreografiaRoutes } from "./modules/coreografias/coreografia.routes";
 import { resumoRoutes } from "./modules/resumo/resumo.routes";
+import { adminRoutes } from "./routes/admin";
 
 export function buildApp() {
   const app = Fastify({ logger: true });
@@ -13,7 +14,7 @@ export function buildApp() {
       "http://localhost:5173",
       "https://competeart-web.vercel.app",
       "https://competeartfestival.com.br",
-      "https://www.competeartfestival.com.br"
+      "https://www.competeartfestival.com.br",
     ],
   });
 
@@ -24,6 +25,7 @@ export function buildApp() {
   app.register(coreografiaRoutes);
   app.register(resumoRoutes);
 
+  app.register(adminRoutes);
   app.get("/", async () => {
     return { status: "ok" };
   });

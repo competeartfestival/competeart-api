@@ -1,7 +1,4 @@
-import {
-  PrismaClient,
-  Formacao,
-} from "@prisma/client";
+import { PrismaClient, Formacao } from "@prisma/client";
 
 interface CriarCoreografiaInput {
   escolaId: string;
@@ -75,30 +72,65 @@ export class CoreografiaService {
   }
 
   async listarPorEscola(escolaId: string) {
-  const escola = await this.prisma.escola.findUnique({
-    where: { id: escolaId },
-  });
+    const escola = await this.prisma.escola.findUnique({
+      where: { id: escolaId },
+    });
 
-  if (!escola) {
-    throw new Error("ESCOLA_NAO_ENCONTRADA");
-  }
+    if (!escola) {
+      throw new Error("ESCOLA_NAO_ENCONTRADA");
+    }
 
-  return this.prisma.coreografia.findMany({
-    where: { escolaId },
-    orderBy: { criadoEm: "asc" },
-    include: {
-      bailarinos: {
-        include: {
-          bailarino: {
-            select: {
-              id: true,
-              nomeArtistico: true,
+    const coreografias = await this.prisma.coreografia.findMany({
+      where: { escolaId },
+      orderBy: { criadoEm: "asc" },
+      include: {
+        bailarinos: {
+          include: {
+            bailarino: {
+              select: {
+                id: true,
+                nomeCompleto: true,
+                nomeArtistico: true,
+              },
             },
           },
         },
       },
-    },
-  });
-}
+    });
 
+    return coreografias.map((c) => {
+      const qtd = c.bailarinos.length;
+
+      let valor = 0;
+
+      switch (c.formacao) {
+        case "SOLO":
+          valor = 160;
+          break;
+        case "DUO":
+          valor = 220;
+          break;
+        case "TRIO":
+          valor = 320;
+          break;
+        case "GRUPO":
+          valor = qtd * 80;
+          break;
+      }
+
+      return {
+        id: c.id,
+        nome: c.nome,
+        nomeCoreografo: c.nomeCoreografo,
+        formacao: c.formacao,
+        modalidade: c.modalidade,
+        categoria: c.categoria,
+        duracao: c.duracao,
+        musica: c.musica,
+        temCenario: c.temCenario,
+        valor,
+        listaBailarinos: c.bailarinos.map((b) => b.bailarino),
+      };
+    });
+  }
 }
