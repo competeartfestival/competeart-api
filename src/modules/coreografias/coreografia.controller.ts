@@ -52,7 +52,7 @@ export async function listarCoreografiasController(
       categoria: c.categoria,
       modalidade: c.modalidade,
       duracao: c.duracao,
-      bailarinos: c.bailarinos.map((b) => b.bailarino),
+      bailarinos: c.listaBailarinos.map((b) => b.nomeCompleto),
     }));
 
     reply.send(response);
