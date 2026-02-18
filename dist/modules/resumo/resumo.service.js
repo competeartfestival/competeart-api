@@ -56,6 +56,12 @@ class ResumoService {
                 duracao: c.duracao,
                 musica: c.musica,
                 temCenario: c.temCenario,
+                bailarinos: c.bailarinos.length,
+                listaBailarinos: c.bailarinos.map((item) => ({
+                    id: item.bailarino.id,
+                    nomeCompleto: item.bailarino.nomeCompleto,
+                    nomeArtistico: item.bailarino.nomeArtistico,
+                })),
                 valor,
             };
         });
@@ -114,6 +120,12 @@ class ResumoService {
                 duracao: c.duracao,
                 musica: c.musica,
                 temCenario: c.temCenario,
+                bailarinos: c.bailarinos.length,
+                listaBailarinos: c.bailarinos.map((item) => ({
+                    id: item.bailarino.id,
+                    nomeCompleto: item.bailarino.nomeCompleto,
+                    nomeArtistico: item.bailarino.nomeArtistico,
+                })),
                 valor,
             };
         });

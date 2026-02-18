@@ -11,13 +11,17 @@ export async function adminRoutes(app: FastifyInstance) {
     const service = new AdminEscolasService(prisma);
     return service.listar();
   });
-  app.get("/admin/escolas/:id", async (request, reply) => {
+  app.get("/admin/escolas/:id", { preHandler: adminAuth }, async (request) => {
     const { id } = request.params as { id: string };
-
     const resumoService = new ResumoService(app.prisma);
+    try {
+      return await resumoService.gerar(id);
+    } catch (error: any) {
+      if (error.message !== "ESCOLA_NAO_ENCONTRADA") {
+        throw error;
+      }
+    }
 
-    const resumo = await resumoService.gerar(id);
-
-    return resumo;
+    return resumoService.gerarIndependente(id);
   });
 }

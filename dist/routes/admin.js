@@ -11,10 +11,17 @@ async function adminRoutes(app) {
         const service = new AdminEscolasService_1.AdminEscolasService(prisma);
         return service.listar();
     });
-    app.get("/admin/escolas/:id", async (request, reply) => {
+    app.get("/admin/escolas/:id", { preHandler: adminAuth_1.adminAuth }, async (request) => {
         const { id } = request.params;
         const resumoService = new resumo_service_1.ResumoService(app.prisma);
-        const resumo = await resumoService.gerar(id);
-        return resumo;
+        try {
+            return await resumoService.gerar(id);
+        }
+        catch (error) {
+            if (error.message !== "ESCOLA_NAO_ENCONTRADA") {
+                throw error;
+            }
+        }
+        return resumoService.gerarIndependente(id);
     });
 }
