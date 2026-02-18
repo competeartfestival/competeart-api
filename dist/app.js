@@ -12,6 +12,7 @@ const bailarino_routes_1 = require("./modules/bailarinos/bailarino.routes");
 const coreografia_routes_1 = require("./modules/coreografias/coreografia.routes");
 const resumo_routes_1 = require("./modules/resumo/resumo.routes");
 const admin_1 = require("./routes/admin");
+const independente_routes_1 = require("./modules/independentes/independente.routes");
 function buildApp() {
     const app = (0, fastify_1.default)({ logger: true });
     app.register(cors_1.default, {
@@ -27,6 +28,7 @@ function buildApp() {
     app.register(bailarino_routes_1.bailarinoRoutes);
     app.register(coreografia_routes_1.coreografiaRoutes);
     app.register(resumo_routes_1.resumoRoutes);
+    app.register(independente_routes_1.independenteRoutes);
     app.register(admin_1.adminRoutes);
     app.get("/", async () => {
         return { status: "ok" };

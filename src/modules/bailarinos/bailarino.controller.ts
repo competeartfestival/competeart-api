@@ -9,7 +9,7 @@ export async function criarBailarinoController(
   try {
     const service = new BailarinoService(app.prisma);
 
-    const bailarino = await service.criar({
+    const bailarino = await service.criarPorEscola({
       escolaId: request.params.id,
       ...request.body,
     });
@@ -18,6 +18,35 @@ export async function criarBailarinoController(
   } catch (error: any) {
     if (error.message === "ESCOLA_NAO_ENCONTRADA") {
       reply.code(404).send({ message: "Escola não encontrada" });
+      return;
+    }
+
+    if (error.code === "P2002") {
+      reply.code(409).send({ message: "CPF já cadastrado" });
+      return;
+    }
+
+    throw error;
+  }
+}
+
+export async function criarBailarinoIndependenteController(
+  app: FastifyInstance,
+  request: any,
+  reply: any,
+) {
+  try {
+    const service = new BailarinoService(app.prisma);
+
+    const bailarino = await service.criarPorIndependente({
+      independenteId: request.params.id,
+      ...request.body,
+    });
+
+    reply.code(201).send({ id: bailarino.id });
+  } catch (error: any) {
+    if (error.message === "INDEPENDENTE_NAO_ENCONTRADO") {
+      reply.code(404).send({ message: "Inscrição independente não encontrada" });
       return;
     }
 
@@ -44,6 +73,27 @@ export async function listarBailarinosController(
   } catch (error: any) {
     if (error.message === "ESCOLA_NAO_ENCONTRADA") {
       reply.code(404).send({ message: "Escola não encontrada" });
+      return;
+    }
+
+    throw error;
+  }
+}
+
+export async function listarBailarinosIndependenteController(
+  app: FastifyInstance,
+  request: any,
+  reply: any,
+) {
+  try {
+    const service = new BailarinoService(app.prisma);
+
+    const bailarinos = await service.listarPorIndependente(request.params.id);
+
+    reply.send(bailarinos);
+  } catch (error: any) {
+    if (error.message === "INDEPENDENTE_NAO_ENCONTRADO") {
+      reply.code(404).send({ message: "Inscrição independente não encontrada" });
       return;
     }
 

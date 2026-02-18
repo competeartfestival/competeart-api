@@ -25,6 +25,20 @@ model Escola {
   atualizadoEm       DateTime      @updatedAt
 }
 
+model InscricaoIndependente {
+  id                 String        @id @default(uuid())
+  nomeResponsavel    String
+  email              String
+  whatsapp           String
+  limiteCoreografias Int           @default(1)
+
+  bailarinos         Bailarino[]
+  coreografias       Coreografia[]
+
+  criadoEm           DateTime      @default(now())
+  atualizadoEm       DateTime      @updatedAt
+}
+
 model Profissional {
   id          String            @id @default(uuid())
   nome        String
@@ -44,8 +58,10 @@ model Bailarino {
   cpf            String                 @unique
   dataNascimento DateTime
 
-  escolaId       String
-  escola         Escola                 @relation(fields: [escolaId], references: [id])
+  escolaId       String?
+  escola         Escola?                @relation(fields: [escolaId], references: [id])
+  independenteId String?
+  independente   InscricaoIndependente? @relation(fields: [independenteId], references: [id])
 
   coreografias   CoreografiaBailarino[]
 
@@ -65,8 +81,10 @@ model Coreografia {
   musica         String
   temCenario     Boolean
 
-  escolaId       String
-  escola         Escola                  @relation(fields: [escolaId], references: [id])
+  escolaId       String?
+  escola         Escola?                 @relation(fields: [escolaId], references: [id])
+  independenteId String?
+  independente   InscricaoIndependente?  @relation(fields: [independenteId], references: [id])
 
   bailarinos     CoreografiaBailarino[]
 

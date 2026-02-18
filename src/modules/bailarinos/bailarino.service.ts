@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 
 interface CriarBailarinoInput {
-  escolaId: string;
+  escolaId?: string;
+  independenteId?: string;
   nomeCompleto: string;
   nomeArtistico: string;
   cpf: string;
@@ -11,7 +12,7 @@ interface CriarBailarinoInput {
 export class BailarinoService {
   constructor(private prisma: PrismaClient) {}
 
-  async criar(data: CriarBailarinoInput) {
+  async criarPorEscola(data: CriarBailarinoInput & { escolaId: string }) {
     const escola = await this.prisma.escola.findUnique({
       where: { id: data.escolaId },
     });
@@ -27,9 +28,49 @@ export class BailarinoService {
         cpf: data.cpf,
         dataNascimento: new Date(data.dataNascimento),
         escolaId: data.escolaId,
+        independenteId: null,
       },
     });
   }
+
+  async criarPorIndependente(
+    data: CriarBailarinoInput & { independenteId: string },
+  ) {
+    const independente = await this.prisma.inscricaoIndependente.findUnique({
+      where: { id: data.independenteId },
+    });
+
+    if (!independente) {
+      throw new Error("INDEPENDENTE_NAO_ENCONTRADO");
+    }
+
+    return this.prisma.bailarino.create({
+      data: {
+        nomeCompleto: data.nomeCompleto,
+        nomeArtistico: data.nomeArtistico,
+        cpf: data.cpf,
+        dataNascimento: new Date(data.dataNascimento),
+        escolaId: null,
+        independenteId: data.independenteId,
+      },
+    });
+  }
+
+  async criar(data: CriarBailarinoInput) {
+    if (data.escolaId) {
+      return this.criarPorEscola({ ...data, escolaId: data.escolaId });
+    }
+
+    if (data.independenteId) {
+      return this.criarPorIndependente({
+        ...data,
+        independenteId: data.independenteId,
+      });
+    }
+
+    throw new Error("INSCRICAO_INVALIDA");
+  }
+
   async listarPorEscola(escolaId: string) {
     const escola = await this.prisma.escola.findUnique({
       where: { id: escolaId },
@@ -41,6 +82,21 @@ export class BailarinoService {
 
     return this.prisma.bailarino.findMany({
       where: { escolaId },
+      orderBy: { nomeArtistico: "asc" },
+    });
+  }
+
+  async listarPorIndependente(independenteId: string) {
+    const independente = await this.prisma.inscricaoIndependente.findUnique({
+      where: { id: independenteId },
+    });
+
+    if (!independente) {
+      throw new Error("INDEPENDENTE_NAO_ENCONTRADO");
+    }
+
+    return this.prisma.bailarino.findMany({
+      where: { independenteId },
       orderBy: { nomeArtistico: "asc" },
     });
   }

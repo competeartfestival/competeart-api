@@ -6,6 +6,7 @@ import { bailarinoRoutes } from "./modules/bailarinos/bailarino.routes";
 import { coreografiaRoutes } from "./modules/coreografias/coreografia.routes";
 import { resumoRoutes } from "./modules/resumo/resumo.routes";
 import { adminRoutes } from "./routes/admin";
+import { independenteRoutes } from "./modules/independentes/independente.routes";
 
 export function buildApp() {
   const app = Fastify({ logger: true });
@@ -24,6 +25,7 @@ export function buildApp() {
   app.register(bailarinoRoutes);
   app.register(coreografiaRoutes);
   app.register(resumoRoutes);
+  app.register(independenteRoutes);
 
   app.register(adminRoutes);
   app.get("/", async () => {

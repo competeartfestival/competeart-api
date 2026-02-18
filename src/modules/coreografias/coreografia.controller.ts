@@ -9,7 +9,7 @@ export async function criarCoreografiaController(
   try {
     const service = new CoreografiaService(app.prisma);
 
-    const coreografia = await service.criar({
+    const coreografia = await service.criarPorEscola({
       escolaId: request.params.id,
       ...request.body,
     });
@@ -28,6 +28,51 @@ export async function criarCoreografiaController(
 
     if (error.message === "FORMACAO_INVALIDA") {
       reply.code(400).send({ message: "Formação incompatível com elenco" });
+      return;
+    }
+    if (error.message === "BAILARINO_INVALIDO") {
+      reply.code(400).send({ message: "Bailarino não pertence à escola informada" });
+      return;
+    }
+
+    throw error;
+  }
+}
+
+export async function criarCoreografiaIndependenteController(
+  app: FastifyInstance,
+  request: any,
+  reply: any,
+) {
+  try {
+    const service = new CoreografiaService(app.prisma);
+
+    const coreografia = await service.criarPorIndependente({
+      independenteId: request.params.id,
+      ...request.body,
+    });
+
+    reply.code(201).send({ id: coreografia.id });
+  } catch (error: any) {
+    if (error.message === "INDEPENDENTE_NAO_ENCONTRADO") {
+      reply.code(404).send({ message: "Inscrição independente não encontrada" });
+      return;
+    }
+
+    if (error.message === "LIMITE_COREOGRAFIAS_ATINGIDO") {
+      reply.code(400).send({ message: "Limite de coreografias atingido" });
+      return;
+    }
+
+    if (error.message === "FORMACAO_INVALIDA") {
+      reply.code(400).send({ message: "Formação incompatível com elenco" });
+      return;
+    }
+
+    if (error.message === "BAILARINO_INVALIDO") {
+      reply.code(400).send({
+        message: "Bailarino não pertence à inscrição independente informada",
+      });
       return;
     }
 
@@ -59,6 +104,37 @@ export async function listarCoreografiasController(
   } catch (error: any) {
     if (error.message === "ESCOLA_NAO_ENCONTRADA") {
       reply.code(404).send({ message: "Escola não encontrada" });
+      return;
+    }
+
+    throw error;
+  }
+}
+
+export async function listarCoreografiasIndependenteController(
+  app: FastifyInstance,
+  request: any,
+  reply: any,
+) {
+  try {
+    const service = new CoreografiaService(app.prisma);
+
+    const coreografias = await service.listarPorIndependente(request.params.id);
+
+    const response = coreografias.map((c) => ({
+      id: c.id,
+      nome: c.nome,
+      formacao: c.formacao,
+      categoria: c.categoria,
+      modalidade: c.modalidade,
+      duracao: c.duracao,
+      bailarinos: c.listaBailarinos.map((b) => b.nomeCompleto),
+    }));
+
+    reply.send(response);
+  } catch (error: any) {
+    if (error.message === "INDEPENDENTE_NAO_ENCONTRADO") {
+      reply.code(404).send({ message: "Inscrição independente não encontrada" });
       return;
     }
 
