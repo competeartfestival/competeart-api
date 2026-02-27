@@ -39,9 +39,8 @@ class ResumoService {
         if (!escola) {
             throw new Error("ESCOLA_NAO_ENCONTRADA");
         }
-        const assistentes = escola.profissionais.filter((p) => p.funcao === client_1.FuncaoProfissional.ASSISTENTE);
-        const assistentesExtras = Math.max(0, assistentes.length - 2);
-        const valorAssistentesExtras = assistentesExtras * 70;
+        const profissionaisExtras = Math.max(0, escola.profissionais.length - 2);
+        const valorProfissionaisExtras = profissionaisExtras * 70;
         let valorCoreografias = 0;
         const coreografiasDetalhe = escola.coreografias.map((c) => {
             const valor = this.calcularValorCoreografia(c.formacao, c.bailarinos.length);
@@ -76,12 +75,14 @@ class ResumoService {
             },
             totais: {
                 coreografias: escola.coreografias.length,
-                assistentesExtras,
+                assistentesExtras: profissionaisExtras,
+                profissionaisExtras,
             },
             valores: {
                 coreografias: valorCoreografias,
-                assistentesExtras: valorAssistentesExtras,
-                total: valorCoreografias + valorAssistentesExtras,
+                assistentesExtras: valorProfissionaisExtras,
+                profissionaisExtras: valorProfissionaisExtras,
+                total: valorCoreografias + valorProfissionaisExtras,
             },
             detalhamento: {
                 coreografias: coreografiasDetalhe,
@@ -140,10 +141,12 @@ class ResumoService {
             totais: {
                 coreografias: inscricao.coreografias.length,
                 assistentesExtras: 0,
+                profissionaisExtras: 0,
             },
             valores: {
                 coreografias: valorCoreografias,
                 assistentesExtras: 0,
+                profissionaisExtras: 0,
                 total: valorCoreografias,
             },
             detalhamento: {

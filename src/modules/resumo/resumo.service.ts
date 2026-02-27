@@ -1,4 +1,4 @@
-import { PrismaClient, Formacao, FuncaoProfissional } from "@prisma/client";
+import { PrismaClient, Formacao } from "@prisma/client";
 
 export class ResumoService {
   constructor(private prisma: PrismaClient) {}
@@ -39,12 +39,8 @@ export class ResumoService {
       throw new Error("ESCOLA_NAO_ENCONTRADA");
     }
 
-    const assistentes = escola.profissionais.filter(
-      (p) => p.funcao === FuncaoProfissional.ASSISTENTE,
-    );
-
-    const assistentesExtras = Math.max(0, assistentes.length - 2);
-    const valorAssistentesExtras = assistentesExtras * 70;
+    const profissionaisExtras = Math.max(0, escola.profissionais.length - 2);
+    const valorProfissionaisExtras = profissionaisExtras * 70;
 
     let valorCoreografias = 0;
 
@@ -83,12 +79,14 @@ export class ResumoService {
       },
       totais: {
         coreografias: escola.coreografias.length,
-        assistentesExtras,
+        assistentesExtras: profissionaisExtras,
+        profissionaisExtras,
       },
       valores: {
         coreografias: valorCoreografias,
-        assistentesExtras: valorAssistentesExtras,
-        total: valorCoreografias + valorAssistentesExtras,
+        assistentesExtras: valorProfissionaisExtras,
+        profissionaisExtras: valorProfissionaisExtras,
+        total: valorCoreografias + valorProfissionaisExtras,
       },
       detalhamento: {
         coreografias: coreografiasDetalhe,
@@ -153,10 +151,12 @@ export class ResumoService {
       totais: {
         coreografias: inscricao.coreografias.length,
         assistentesExtras: 0,
+        profissionaisExtras: 0,
       },
       valores: {
         coreografias: valorCoreografias,
         assistentesExtras: 0,
+        profissionaisExtras: 0,
         total: valorCoreografias,
       },
       detalhamento: {

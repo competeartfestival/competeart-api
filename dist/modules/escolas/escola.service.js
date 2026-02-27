@@ -6,10 +6,8 @@ class EscolaService {
         this.prisma = prisma;
     }
     async criar(data) {
-        const assistentes = data.profissionais.filter((p) => p.funcao === "ASSISTENTE");
         const profissionaisComFlag = data.profissionais.map((p) => {
-            const ehExtra = p.funcao === "ASSISTENTE" &&
-                assistentes.indexOf(p) >= 2;
+            const ehExtra = data.profissionais.indexOf(p) >= 2;
             return {
                 nome: p.nome,
                 funcao: p.funcao,

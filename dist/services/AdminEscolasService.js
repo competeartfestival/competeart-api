@@ -50,11 +50,10 @@ class AdminEscolasService {
             }),
         ]);
         const inscricoesEscola = escolas.map((escola) => {
-            const assistentes = escola.profissionais.filter((p) => p.funcao === client_1.FuncaoProfissional.ASSISTENTE);
-            const assistentesExtras = Math.max(0, assistentes.length - 2);
-            const valorAssistentesExtras = assistentesExtras * 70;
+            const profissionaisExtras = Math.max(0, escola.profissionais.length - 2);
+            const valorProfissionaisExtras = profissionaisExtras * 70;
             const valorCoreografias = this.calcularValorCoreografias(escola.coreografias);
-            const total = valorCoreografias + valorAssistentesExtras;
+            const total = valorCoreografias + valorProfissionaisExtras;
             const completas = escola.coreografias.length >= escola.limiteCoreografias;
             return {
                 id: escola.id,
