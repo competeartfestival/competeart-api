@@ -3,6 +3,15 @@ import { PrismaClient, Formacao } from "@prisma/client";
 export class AdminEscolasService {
   constructor(private prisma: PrismaClient) {}
 
+  private calcularStatusPorEtapas(
+    possuiElenco: boolean,
+    possuiCoreografia: boolean,
+  ) {
+    if (!possuiElenco) return "FALTA_ELENCO";
+    if (!possuiCoreografia) return "FALTA_COREOGRAFIA";
+    return "COMPLETO";
+  }
+
   private calcularValorCoreografias(
     coreografias: Array<{ formacao: Formacao; bailarinos: Array<any> }>,
   ) {
@@ -35,6 +44,7 @@ export class AdminEscolasService {
       this.prisma.escola.findMany({
         include: {
           profissionais: true,
+          bailarinos: true,
           coreografias: {
             include: {
               bailarinos: true,
@@ -44,6 +54,7 @@ export class AdminEscolasService {
       }),
       this.prisma.inscricaoIndependente.findMany({
         include: {
+          bailarinos: true,
           coreografias: {
             include: {
               bailarinos: true,
@@ -59,17 +70,20 @@ export class AdminEscolasService {
       const valorCoreografias = this.calcularValorCoreografias(escola.coreografias);
 
       const total = valorCoreografias + valorProfissionaisExtras;
-
-      const completas = escola.coreografias.length >= escola.limiteCoreografias;
+      const status = this.calcularStatusPorEtapas(
+        escola.bailarinos.length > 0,
+        escola.coreografias.length > 0,
+      );
 
       return {
         id: escola.id,
         nome: escola.nome,
         limiteCoreografias: escola.limiteCoreografias,
+        bailarinosCadastrados: escola.bailarinos.length,
         coreografiasCadastradas: escola.coreografias.length,
         valorTotal: total,
         tipoInscricao: "ESCOLA",
-        status: completas ? "COMPLETA" : "EM_ANDAMENTO",
+        status,
       };
     });
 
@@ -77,17 +91,20 @@ export class AdminEscolasService {
       const valorCoreografias = this.calcularValorCoreografias(
         independente.coreografias,
       );
-      const completas =
-        independente.coreografias.length >= independente.limiteCoreografias;
+      const status = this.calcularStatusPorEtapas(
+        independente.bailarinos.length > 0,
+        independente.coreografias.length > 0,
+      );
 
       return {
         id: independente.id,
         nome: independente.nomeResponsavel,
         limiteCoreografias: independente.limiteCoreografias,
+        bailarinosCadastrados: independente.bailarinos.length,
         coreografiasCadastradas: independente.coreografias.length,
         valorTotal: valorCoreografias,
         tipoInscricao: "BAILARINO_INDEPENDENTE",
-        status: completas ? "COMPLETA" : "EM_ANDAMENTO",
+        status,
       };
     });
 
