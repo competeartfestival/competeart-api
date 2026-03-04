@@ -24,4 +24,19 @@ async function adminRoutes(app) {
         }
         return resumoService.gerarIndependente(id);
     });
+    app.delete("/admin/escolas/:id", { preHandler: adminAuth_1.adminAuth }, async (request, reply) => {
+        const { id } = request.params;
+        const service = new AdminEscolasService_1.AdminEscolasService(prisma);
+        try {
+            await service.excluirInscricao(id);
+        }
+        catch (error) {
+            if (error.message === "INSCRICAO_NAO_ENCONTRADA") {
+                reply.code(404).send({ message: "Inscrição não encontrada" });
+                return;
+            }
+            throw error;
+        }
+        reply.code(204).send();
+    });
 }

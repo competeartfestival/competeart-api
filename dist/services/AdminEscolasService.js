@@ -68,6 +68,7 @@ class AdminEscolasService {
                 id: escola.id,
                 nome: escola.nome,
                 whatsapp: escola.whatsapp,
+                dataInscricao: escola.criadoEm,
                 limiteCoreografias: escola.limiteCoreografias,
                 bailarinosCadastrados: escola.bailarinos.length,
                 coreografiasCadastradas: escola.coreografias.length,
@@ -83,6 +84,7 @@ class AdminEscolasService {
                 id: independente.id,
                 nome: independente.nomeResponsavel,
                 whatsapp: independente.whatsapp,
+                dataInscricao: independente.criadoEm,
                 limiteCoreografias: independente.limiteCoreografias,
                 bailarinosCadastrados: independente.bailarinos.length,
                 coreografiasCadastradas: independente.coreografias.length,
@@ -92,6 +94,60 @@ class AdminEscolasService {
             };
         });
         return [...inscricoesEscola, ...inscricoesIndependentes];
+    }
+    async excluirInscricao(id) {
+        const [escola, independente] = await Promise.all([
+            this.prisma.escola.findUnique({ where: { id }, select: { id: true } }),
+            this.prisma.inscricaoIndependente.findUnique({
+                where: { id },
+                select: { id: true },
+            }),
+        ]);
+        if (!escola && !independente) {
+            throw new Error("INSCRICAO_NAO_ENCONTRADA");
+        }
+        await this.prisma.$transaction(async (tx) => {
+            if (escola) {
+                const coreografiasEscola = await tx.coreografia.findMany({
+                    where: { escolaId: id },
+                    select: { id: true },
+                });
+                const coreografiaIds = coreografiasEscola.map((item) => item.id);
+                await tx.coreografiaBailarino.deleteMany({
+                    where: { coreografiaId: { in: coreografiaIds } },
+                });
+                await tx.coreografia.deleteMany({
+                    where: { escolaId: id },
+                });
+                await tx.bailarino.deleteMany({
+                    where: { escolaId: id },
+                });
+                await tx.profissional.deleteMany({
+                    where: { escolaId: id },
+                });
+                await tx.escola.delete({
+                    where: { id },
+                });
+                return;
+            }
+            const coreografiasIndependente = await tx.coreografia.findMany({
+                where: { independenteId: id },
+                select: { id: true },
+            });
+            const coreografiaIds = coreografiasIndependente.map((item) => item.id);
+            await tx.coreografiaBailarino.deleteMany({
+                where: { coreografiaId: { in: coreografiaIds } },
+            });
+            await tx.coreografia.deleteMany({
+                where: { independenteId: id },
+            });
+            await tx.bailarino.deleteMany({
+                where: { independenteId: id },
+            });
+            await tx.inscricaoIndependente.delete({
+                where: { id },
+            });
+        });
     }
 }
 exports.AdminEscolasService = AdminEscolasService;

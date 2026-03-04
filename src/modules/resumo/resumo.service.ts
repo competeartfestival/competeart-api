@@ -72,10 +72,17 @@ export class ResumoService {
       escola: {
         id: escola.id,
         nome: escola.nome,
+        email: escola.email,
         limiteCoreografias: escola.limiteCoreografias,
         whatsapp: escola.whatsapp,
         nomeDiretor: escola.nomeDiretor,
         endereco: escola.endereco,
+        profissionais: escola.profissionais.map((profissional) => ({
+          id: profissional.id,
+          nome: profissional.nome,
+          funcao: profissional.funcao,
+          ehExtra: profissional.ehExtra,
+        })),
       },
       totais: {
         coreografias: escola.coreografias.length,
