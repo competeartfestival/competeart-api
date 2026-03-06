@@ -5,10 +5,11 @@ export class AdminEscolasService {
 
   private calcularStatusPorEtapas(
     possuiElenco: boolean,
-    possuiCoreografia: boolean,
+    quantidadeCoreografias: number,
+    limiteCoreografias: number,
   ) {
     if (!possuiElenco) return "FALTA_ELENCO";
-    if (!possuiCoreografia) return "FALTA_COREOGRAFIA";
+    if (quantidadeCoreografias < limiteCoreografias) return "FALTA_COREOGRAFIA";
     return "COMPLETO";
   }
 
@@ -72,7 +73,8 @@ export class AdminEscolasService {
       const total = valorCoreografias + valorProfissionaisExtras;
       const status = this.calcularStatusPorEtapas(
         escola.bailarinos.length > 0,
-        escola.coreografias.length > 0,
+        escola.coreografias.length,
+        escola.limiteCoreografias,
       );
 
       return {
@@ -95,7 +97,8 @@ export class AdminEscolasService {
       );
       const status = this.calcularStatusPorEtapas(
         independente.bailarinos.length > 0,
-        independente.coreografias.length > 0,
+        independente.coreografias.length,
+        independente.limiteCoreografias,
       );
 
       return {

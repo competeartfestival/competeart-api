@@ -6,10 +6,10 @@ class AdminEscolasService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    calcularStatusPorEtapas(possuiElenco, possuiCoreografia) {
+    calcularStatusPorEtapas(possuiElenco, quantidadeCoreografias, limiteCoreografias) {
         if (!possuiElenco)
             return "FALTA_ELENCO";
-        if (!possuiCoreografia)
+        if (quantidadeCoreografias < limiteCoreografias)
             return "FALTA_COREOGRAFIA";
         return "COMPLETO";
     }
@@ -63,7 +63,7 @@ class AdminEscolasService {
             const valorProfissionaisExtras = profissionaisExtras * 70;
             const valorCoreografias = this.calcularValorCoreografias(escola.coreografias);
             const total = valorCoreografias + valorProfissionaisExtras;
-            const status = this.calcularStatusPorEtapas(escola.bailarinos.length > 0, escola.coreografias.length > 0);
+            const status = this.calcularStatusPorEtapas(escola.bailarinos.length > 0, escola.coreografias.length, escola.limiteCoreografias);
             return {
                 id: escola.id,
                 nome: escola.nome,
@@ -79,7 +79,7 @@ class AdminEscolasService {
         });
         const inscricoesIndependentes = independentes.map((independente) => {
             const valorCoreografias = this.calcularValorCoreografias(independente.coreografias);
-            const status = this.calcularStatusPorEtapas(independente.bailarinos.length > 0, independente.coreografias.length > 0);
+            const status = this.calcularStatusPorEtapas(independente.bailarinos.length > 0, independente.coreografias.length, independente.limiteCoreografias);
             return {
                 id: independente.id,
                 nome: independente.nomeResponsavel,
