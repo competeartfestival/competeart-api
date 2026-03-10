@@ -33,6 +33,7 @@ export const criarCoreografiaSchema = {
           "CONTEMPORANEO",
           "DANCAS_URBANAS",
           "SAPATEADO",
+          "DANCA_POPULAR_BRASILEIRA",
           "ESTILO_LIVRE",
         ],
       },
@@ -47,6 +48,7 @@ export const criarCoreografiaSchema = {
           "ADULTO_INICIANTE",
           "SENIOR",
           "MASTER",
+          "DANCA_INCLUSIVA",
         ],
       },
 
